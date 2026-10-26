@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="../SimpleBlogger.Business/SimpleBlogger.Business.csproj" />
+  <Project Path="../SimpleBlogger.DataAccess/SimpleBlogger.DataAccess.csproj" />
+  <Project Path="../SimpleBlogger.Models/SimpleBlogger.Models.csproj" />
+  <Project Path="../SimpleBlogger.Utilities/SimpleBlogger.Utilities.csproj" />
+  <Project Path="SimpleBlogger.csproj" />
+</Solution>
