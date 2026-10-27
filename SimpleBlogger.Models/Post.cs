@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
@@ -13,7 +14,9 @@ namespace SimpleBlogger.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [ForeignKey("User")]
+        [ValidateNever]
         public string UserId { get; set; }
+        [ValidateNever]
         public ApplicationUser User { get; set; }
     }
 }

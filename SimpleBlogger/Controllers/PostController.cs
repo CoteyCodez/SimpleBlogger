@@ -9,8 +9,8 @@ namespace SimpleBlogger.Controllers
     public class PostController : Controller
     {
         private readonly IPostService _postService;
-        private readonly UserManager<IdentityUser> _userManager;
-        public PostController(IPostService postService, UserManager<IdentityUser> userManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public PostController(IPostService postService, UserManager<ApplicationUser> userManager)
         {
             _postService = postService;
             _userManager = userManager;
@@ -38,13 +38,14 @@ namespace SimpleBlogger.Controllers
         [ActionName("Create")]
         public async Task<IActionResult> CreatePOST(Post post)
         {
+            post.UserId = _userManager.GetUserId(User);
+
             if (!ModelState.IsValid)
             {
                 //return View(post);
                 throw new Exception("Didn't work");
             }
 
-            post.UserId = _userManager.GetUserId(User);
             await _postService.CreatePostAsync(post);
             return RedirectToAction("Index");
         }
