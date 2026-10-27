@@ -1,0 +1,11 @@
+﻿@using SimpleBlogger.Models
+@model List<Post>
+
+@foreach(var post in Model)
+{
+    <div class="post">
+        <h2>@post.Title</h2>
+        <p>@post.Body</p>
+        @*<a asp-action="Details" asp-route-id="@post.Id">View Details</a>*@
+    </div>
+}

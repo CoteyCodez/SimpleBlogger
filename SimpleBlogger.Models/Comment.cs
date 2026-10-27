@@ -5,15 +5,18 @@ using System.Text;
 
 namespace SimpleBlogger.Models
 {
-    public class Posts
+    public class Comment
     {
         public int Id { get; set; }
-        public string Title { get; set; }
         public string Body { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [ForeignKey("User")]
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public string? UserId { get; set; }
+        public ApplicationUser? User { get; set; }
+
+        [ForeignKey("Post")]
+        public int PostId { get; set; }
+        public Post Post { get; set; }
     }
 }

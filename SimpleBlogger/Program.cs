@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using TaskManager.Data.DbInitializer;
+using SimpleBlogger.Business;
 using SimpleBlogger.Data;
+using SimpleBlogger.DataAccess; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,13 +12,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity <ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
 
 // ADD: Register services for dependency injection
-//builder.Services.AddScoped<ITaskItemService, TaskItemService>();
+builder.Services.AddScoped<IPostService, PostService>();
 //builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 //builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
 //builder.Services.AddScoped<IOrganizationService, OrganizationService>();

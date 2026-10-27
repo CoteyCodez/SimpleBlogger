@@ -5,16 +5,16 @@ using System.Text;
 
 namespace SimpleBlogger.Models
 {
-    public class PostTags
+    public class PostTag
     {
-        //public int Id { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("Post")]
         public int PostId { get; set; }
-        public Posts Post { get; set; }
+        public Post Post { get; set; }
 
         [ForeignKey("Tag")]
         public int TagId { get; set; }
-        public Tags Tag { get; set; }
+        public Tag Tag { get; set; }
     }
 }
