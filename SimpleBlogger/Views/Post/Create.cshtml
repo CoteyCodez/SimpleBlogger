@@ -1,13 +1,41 @@
-﻿
-@using SimpleBlogger.Models
+﻿@using SimpleBlogger.Models
 @model Post
 
-<form method="post">
+<form id="postForm" method="post" asp-action="Create">
+
+    <label asp-for="Title" class="form-label fw-semibold small"></label>
+    
+    <br />
 
     <input asp-for="Title" />
-    <br /> 
 
-    <input asp-for="Body" />
     <br /> 
+    <br />
+
+    <label asp-for="Body" class="form-label fw-semibold small"></label>
+    <textarea asp-for="Body" hidden class="form-control" placeholder="Enter product desc"></textarea>
+    <div id="quill-editor" style="height: 200px;"></div>
+    <span asp-validation-for="Body" class="text-danger small"></span>
+    
+    <br />
+    
     <input type="submit" />
 </form>
+
+@section Scripts {
+    <script>
+        const quill = new Quill('#quill-editor', {
+            theme: 'snow'
+        });
+
+        const body = document.getElementById('Body');
+
+        // Load existing content when the form is redisplayed
+        quill.root.innerHTML = body.value;
+
+        // Copy the editor HTML into the textarea before submit
+        document.getElementById('postForm').addEventListener('submit', () => {
+            body.value = quill.root.innerHTML;
+        });
+    </script>
+}

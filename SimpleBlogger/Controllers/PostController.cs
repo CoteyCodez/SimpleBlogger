@@ -23,9 +23,11 @@ namespace SimpleBlogger.Controllers
         }
 
         // GET: PostController/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
+            //var post = await _postService.GetSinglePostAsync(id);
+            //if
+            //return View(post);
         }
 
         // GET: PostController/Create

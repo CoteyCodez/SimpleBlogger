@@ -27,7 +27,10 @@ namespace SimpleBlogger.Business
         {
             return await _context.Posts.ToListAsync();
         }
-
+        public async Task<Post> GetSinglePostAsync(int postId)
+        {
+            return await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+        }
         public Task<Post> UpdatePostAsync(Post post)
         {
             throw new NotImplementedException();

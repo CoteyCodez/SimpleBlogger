@@ -5,7 +5,7 @@
 {
     <div class="post">
         <h2>@post.Title</h2>
-        <p>@post.Body</p>
+        <p>@Html.Raw(post.Body)</p>
         @*<a asp-action="Details" asp-route-id="@post.Id">View Details</a>*@
     </div>
 }
