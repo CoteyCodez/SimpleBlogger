@@ -25,9 +25,9 @@ namespace SimpleBlogger.Controllers
         // GET: PostController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            //var post = await _postService.GetSinglePostAsync(id);
-            //if
-            //return View(post);
+            var post = await _postService.GetSinglePostAsync(id);
+
+            return post == null ? NotFound() : View(post);
         }
 
         // GET: PostController/Create
@@ -35,6 +35,11 @@ namespace SimpleBlogger.Controllers
         {
             return View();
         }
+
+        //public IActionResult Manage()
+        //{
+        //    return View();
+        //}
 
         [HttpPost]
         [ActionName("Create")]
@@ -51,6 +56,16 @@ namespace SimpleBlogger.Controllers
             await _postService.CreatePostAsync(post);
             return RedirectToAction("Index");
         }
+
+        // POST: PostController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _postService.DeletePostAsync(id);
+            return RedirectToAction("Index");
+        }
+
 
         //// POST: PostController/Create
         //[HttpPost]
@@ -77,27 +92,6 @@ namespace SimpleBlogger.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: PostController/Delete/5
-        public IActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: PostController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, IFormCollection collection)
         {
             try
             {

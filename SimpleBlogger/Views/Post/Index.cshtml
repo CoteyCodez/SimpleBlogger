@@ -4,8 +4,11 @@
 @foreach(var post in Model)
 {
     <div class="post">
-        <h2>@post.Title</h2>
+        <h2><a asp-action="Details" asp-route-id="@post.Id">@post.Title</a></h2>
         <p>@Html.Raw(post.Body)</p>
         @*<a asp-action="Details" asp-route-id="@post.Id">View Details</a>*@
+        <form asp-action="Delete" asp-route-id="@post.Id">
+            <button type="submit">Delete</button>
+        </form>
     </div>
 }

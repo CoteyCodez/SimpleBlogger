@@ -18,9 +18,13 @@ namespace SimpleBlogger.Business
             return post; 
         }
 
-        public Task<Post> DeletePostAsync(int postId)
+        public async Task<Post> DeletePostAsync(int id)
         {
-            throw new NotImplementedException();
+            var post = await GetSinglePostAsync(id);
+            _context.Posts.Remove(post);
+            await _context.SaveChangesAsync();
+
+            return post; 
         }
 
         public async Task<IEnumerable<Post>> GetAllPostsAsync()
