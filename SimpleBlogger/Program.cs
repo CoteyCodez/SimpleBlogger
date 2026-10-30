@@ -19,6 +19,8 @@ builder.Services.AddControllersWithViews();
 
 // ADD: Register services for dependency injection
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+
 //builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 //builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
 //builder.Services.AddScoped<IOrganizationService, OrganizationService>();

@@ -1,7 +1,33 @@
-﻿@*Add individual blog page view below:*@
+﻿@using SimpleBlogger.Models.ViewModels
+@model PostDetailsViewModel
 
-@model Post
+@*Individual blog post page*@
 
 <h1>@Model.Title</h1>
 
-<p>@Html.Raw(Model.Body)</p>
+<div> 
+    <p>@Html.Raw(Model.PostBody)</p>
+</div>
+
+<div>
+    <form method="post" asp-controller="Comment" asp-action="Create">
+        <textarea name="Body"></textarea>
+        <input type="hidden" name="PostId" value="@Model.Id" />
+
+        <button type="submit">Add Comment</button>
+    </form>
+</div>
+<div>
+    @foreach (var comment in Model.Comments)
+    {
+        <div>
+            @if(comment.UserId != null)
+            {
+                <p>@comment.User.UserName, @comment.CreatedAt</p>
+
+            }
+            <p>@comment.Body</p>
+        </div>
+    }
+</div>
+

@@ -3,16 +3,20 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SimpleBlogger.Business;
 using SimpleBlogger.Models;
+using SimpleBlogger.Models.ViewModels;
 
 namespace SimpleBlogger.Controllers
 {
     public class PostController : Controller
     {
         private readonly IPostService _postService;
+        private readonly ICommentService _commentService;
+
         private readonly UserManager<ApplicationUser> _userManager;
-        public PostController(IPostService postService, UserManager<ApplicationUser> userManager)
+        public PostController(IPostService postService, ICommentService commentService, UserManager<ApplicationUser> userManager)
         {
             _postService = postService;
+            _commentService = commentService;
             _userManager = userManager;
         }
         // GET: PostController
@@ -26,8 +30,21 @@ namespace SimpleBlogger.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var post = await _postService.GetSinglePostAsync(id);
+            if (post == null) return NotFound();
 
-            return post == null ? NotFound() : View(post);
+            var comments = await _commentService.GetAllCommentsOnPostAsync(id);
+
+            var viewModel = new PostDetailsViewModel
+            {
+                Id = id,
+                Title = post.Title,
+                PostBody = post.Body,
+                CreatedAt = post.CreatedAt,
+                User = post.User,
+                Comments = comments
+            };
+
+            return View(viewModel);
         }
 
         // GET: PostController/Create
@@ -60,9 +77,9 @@ namespace SimpleBlogger.Controllers
         // POST: PostController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int Id)
         {
-            await _postService.DeletePostAsync(id);
+            await _postService.DeletePostAsync(Id);
             return RedirectToAction("Index");
         }
 
