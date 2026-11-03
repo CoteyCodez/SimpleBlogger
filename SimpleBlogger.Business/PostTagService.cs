@@ -27,13 +27,11 @@ namespace SimpleBlogger.Business.Interfaces
             return postTag;
         }
 
-        //public async Task<PostTag> GetTagForPost(int id)
-        //{
-        //    var postTag = await _context.PostTags.FirstOrDefaultAsync(pt => pt.Id == id);
-        //    _context.PostTags.Remove(postTag);
-        //    await _context.SaveChangesAsync();
-        //    return postTag;
-        //}
+        public async Task<PostTag> GetPostTagAsync(int postId)
+        {
+            var postTag = await _context.PostTags.FirstOrDefaultAsync(pt => pt.PostId == postId);
+            return postTag;
+        }
 
 
     }

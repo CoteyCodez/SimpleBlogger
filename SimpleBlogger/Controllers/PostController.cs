@@ -33,10 +33,28 @@ namespace SimpleBlogger.Controllers
 
         }
         // GET: PostController
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(List<PostWithTagsViewModel> vmList)
         {
             var posts = await _postService.GetAllPostsAsync();
-            return View(posts);
+            foreach(var post in posts)
+            {
+                var assignedTag = await _postTagService.GetPostTagAsync(post.Id);
+                if (assignedTag != null)
+                {
+                    var tag = await _tagService.GetSingleTagAsync(assignedTag.TagId);
+                    var vm = new PostWithTagsViewModel
+                    {
+                        Id = post.Id,
+                        Title = post.Title,
+                        Body = post.Body,
+                        CreatedAt = post.CreatedAt,
+                        UserId = post.UserId,
+                        AssignedTag = tag
+                    };
+                    vmList.Add(vm);
+                }
+            }
+            return View(vmList);
         }
 
         // GET: PostController/Details/5

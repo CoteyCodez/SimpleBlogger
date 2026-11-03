@@ -8,5 +8,7 @@ namespace SimpleBlogger.Business.Interfaces
     {
         Task<PostTag> CreatePostTagAsync(PostTag postTag);
         Task<PostTag> DeletePostTagAsync(int id);
+        Task<PostTag> GetPostTagAsync(int postId);
+
     }
 }
