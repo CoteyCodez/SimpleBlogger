@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SimpleBlogger.DataAccess\SimpleBlogger.DataAccess.csproj" />
     <ProjectReference Include="..\SimpleBlogger.Models\SimpleBlogger.Models.csproj" />
     <ProjectReference Include="..\SimpleBlogger.Utilities\SimpleBlogger.Utilities.csproj" />

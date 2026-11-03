@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SimpleBlogger.Data;
 using SimpleBlogger.Models;
+using SimpleBlogger.Business.Interfaces;
 
 namespace SimpleBlogger.Business
 {

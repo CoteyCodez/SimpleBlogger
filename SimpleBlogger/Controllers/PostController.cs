@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SimpleBlogger.Business;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using SimpleBlogger.Business.Interfaces;
 using SimpleBlogger.Models;
 using SimpleBlogger.Models.ViewModels;
 
@@ -11,13 +13,24 @@ namespace SimpleBlogger.Controllers
     {
         private readonly IPostService _postService;
         private readonly ICommentService _commentService;
+        private readonly ITagService _tagService;
+        private readonly IPostTagService _postTagService;
+
 
         private readonly UserManager<ApplicationUser> _userManager;
-        public PostController(IPostService postService, ICommentService commentService, UserManager<ApplicationUser> userManager)
+        public PostController(
+            IPostService postService, 
+            ICommentService commentService, 
+            ITagService tagService, 
+            UserManager<ApplicationUser> userManager,
+            IPostTagService postTagService)
         {
             _postService = postService;
             _commentService = commentService;
+            _tagService = tagService;
             _userManager = userManager;
+            _postTagService = postTagService;
+
         }
         // GET: PostController
         public async Task<IActionResult> Index()
@@ -46,31 +59,54 @@ namespace SimpleBlogger.Controllers
 
             return View(viewModel);
         }
-
-        // GET: PostController/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         //public IActionResult Manage()
         //{
         //    return View();
         //}
 
+        // GET: PostController/Create
+        public IActionResult Create(PostCreateViewModel vm)
+        {
+            vm.TagSelectList = new SelectList(_tagService.GetAllTagsAsync().Result, "Id", "Name");
+            return View(vm);
+        }
+
         [HttpPost]
         [ActionName("Create")]
-        public async Task<IActionResult> CreatePOST(Post post)
+        public async Task<IActionResult> CreatePOST(PostCreateViewModel vm) // FIXME: Not saving psotTag properly
         {
-            post.UserId = _userManager.GetUserId(User);
+            var post = new Post
+            {
+                //Id = vm.Id, 
+                Title = vm.Title,
+                Body = vm.Body,
+                CreatedAt = vm.CreatedAt,
+                UserId = _userManager.GetUserId(User)                
+            };
 
             if (!ModelState.IsValid)
             {
-                //return View(post);
                 throw new Exception("Didn't work");
             }
 
+            var postTag = new PostTag(); 
+
+            if (vm.SelectedTagId != null)
+            {
+                int tagId = vm.SelectedTagId ?? 0;
+
+                postTag.Post = post;
+                postTag.Tag = await _tagService.GetSingleTagAsync(tagId);
+
+                await _postService.CreatePostAsync(post);
+                await _postTagService.CreatePostTagAsync(postTag);
+                return RedirectToAction("Index");
+
+            }
             await _postService.CreatePostAsync(post);
+
+
+            //Fixme: Add CreatePostTagAsync here to save the PostTag relationship if a tag is selected
             return RedirectToAction("Index");
         }
 

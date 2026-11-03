@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SimpleBlogger.Business;
+using SimpleBlogger.Business.Interfaces;
 using SimpleBlogger.Data;
-using SimpleBlogger.DataAccess; 
+using SimpleBlogger.DataAccess;
+using TaskManager.Data.DbInitializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,9 +21,11 @@ builder.Services.AddControllersWithViews();
 
 // ADD: Register services for dependency injection
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<IPostTagService, PostTagService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
-//builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 //builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
 //builder.Services.AddScoped<IOrganizationService, OrganizationService>();
 //builder.Services.AddScoped<ILocalFileService, LocalFileService>();
@@ -57,15 +61,15 @@ app.MapRazorPages()
    .WithStaticAssets();
 
 
-//await SeedDatabase();
+await SeedDatabase();
 
 app.Run();
 
-//async Task SeedDatabase()
-//{
-//    using (var scope = app.Services.CreateScope())
-//    {
-//        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-//        await dbInitializer.InitializeAsync();
-//    }
-//}
+async Task SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        await dbInitializer.InitializeAsync();
+    }
+}

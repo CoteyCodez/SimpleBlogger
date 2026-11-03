@@ -1,6 +1,6 @@
 ﻿using SimpleBlogger.Models;
 
-namespace SimpleBlogger.Business
+namespace SimpleBlogger.Business.Interfaces
 {
     public interface ICommentService
     {

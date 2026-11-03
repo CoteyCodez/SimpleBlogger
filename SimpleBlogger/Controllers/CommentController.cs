@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using SimpleBlogger.Business;
+using SimpleBlogger.Business.Interfaces;
 using SimpleBlogger.Models;
 using SimpleBlogger.Models.ViewModels;
 
