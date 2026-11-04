@@ -18,5 +18,11 @@ namespace SimpleBlogger.Models
         public string UserId { get; set; }
         [ValidateNever]
         public ApplicationUser User { get; set; }
+
+        // Navigation properties
+        [ValidateNever]
+        public ICollection<PostTag> PostTags { get; set; } = new List<PostTag>();
+        [ValidateNever]
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

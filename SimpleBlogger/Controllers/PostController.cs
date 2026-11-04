@@ -33,37 +33,31 @@ namespace SimpleBlogger.Controllers
 
         }
         // GET: PostController
-        public async Task<IActionResult> Index(List<PostWithTagsViewModel> vmList)
+        public async Task<IActionResult> Index()
         {
-            var posts = await _postService.GetAllPostsAsync();
-            foreach(var post in posts)
+            var posts = await _postService.GetPostsWithTagAndCommentsAsync();
+
+            var vmList = posts.Select(p => new PostWithTagsViewModel
             {
-                var assignedTag = await _postTagService.GetPostTagAsync(post.Id);
-                if (assignedTag != null)
-                {
-                    var tag = await _tagService.GetSingleTagAsync(assignedTag.TagId);
-                    var vm = new PostWithTagsViewModel
-                    {
-                        Id = post.Id,
-                        Title = post.Title,
-                        Body = post.Body,
-                        CreatedAt = post.CreatedAt,
-                        UserId = post.UserId,
-                        AssignedTag = tag
-                    };
-                    vmList.Add(vm);
-                }
-            }
+                Id = p.Id,
+                Title = p.Title,
+                Body = p.Body,
+                CreatedAt = p.CreatedAt,
+                UserId = p.UserId,
+                AssignedTag = p.PostTags.FirstOrDefault()?.Tag
+            }).ToList();
+
             return View(vmList);
         }
 
         // GET: PostController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var post = await _postService.GetSinglePostAsync(id);
-            if (post == null) return NotFound();
+            var post = await _postService.GetPostWithTagAndCommentsAsync(id);
 
-            var comments = await _commentService.GetAllCommentsOnPostAsync(id);
+            if (post == null) 
+                return NotFound();
+
 
             var viewModel = new PostDetailsViewModel
             {
@@ -72,7 +66,9 @@ namespace SimpleBlogger.Controllers
                 PostBody = post.Body,
                 CreatedAt = post.CreatedAt,
                 User = post.User,
-                Comments = comments
+                Comments = post.Comments,
+                AssignedTag = post.PostTags.FirstOrDefault()?.Tag
+
             };
 
             return View(viewModel);

@@ -28,7 +28,7 @@ namespace SimpleBlogger.Business
         public async Task<Tag> AssignTagAsync(int postId, string tagName)
         {
             //Check if post exists
-            var post = await _postService.GetSinglePostAsync(postId) ?? throw new Exception("Post does not exist!");
+            var post = await _postService.GetPostWithTagAndCommentsAsync(postId) ?? throw new Exception("Post does not exist!");
 
             var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Name == tagName)
                 ?? throw new Exception("Tag does not exist!");

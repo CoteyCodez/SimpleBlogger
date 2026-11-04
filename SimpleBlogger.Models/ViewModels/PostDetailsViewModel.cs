@@ -17,10 +17,14 @@ namespace SimpleBlogger.Models.ViewModels
         public ApplicationUser User { get; set; }
         #endregion
 
-        #region Comments
-        public Comment submittedComment { get; set; }
+        public Tag AssignedTag { get; set; }
+
+        #region Comments 
+        public Comment SubmittedComment { get; set; }
         public IEnumerable<Comment> Comments { get; set; }
         #endregion
+
+
 
     }
 }

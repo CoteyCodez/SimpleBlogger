@@ -21,24 +21,33 @@ namespace SimpleBlogger.Business
 
         public async Task<Post> DeletePostAsync(int id)
         {
-            var post = await GetSinglePostAsync(id);
+            var post = await GetPostWithTagAndCommentsAsync(id);
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
 
             return post; 
         }
 
-        public async Task<IEnumerable<Post>> GetAllPostsAsync()
+        public async Task<Post> GetPostWithTagAndCommentsAsync(int postId)
         {
-            return await _context.Posts.ToListAsync();
-        }
-        public async Task<Post> GetSinglePostAsync(int postId)
-        {
-            return await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+            return await _context.Posts.Include(p => p.PostTags)
+                .ThenInclude(pt => pt.Tag)
+                .Include(p => p.Comments)
+                .FirstOrDefaultAsync(p => p.Id == postId);
         }
         public Task<Post> UpdatePostAsync(Post post)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<Post>> GetPostsWithTagAndCommentsAsync()
+        {
+            var postsWithTags = await _context.Posts.Include(p => p.PostTags)
+                .ThenInclude(pt => pt.Tag)
+                .Include(p => p.Comments)
+                .ToListAsync();
+
+            return postsWithTags;
         }
     }
 }
