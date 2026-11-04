@@ -1,8 +1,18 @@
 ﻿@using SimpleBlogger.Models.ViewModels
-@model List<PostWithTagsViewModel>
+@model List<PostWithTagAndFilterViewModel>
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-outline-secondary @(ViewBag.Filter == null ? "active" : "")">All</a>
+    @foreach (var tag in ViewBag.Tags)
+    {
+        <a asp-action="Index" asp-route-filter="@tag.Name"
+           class="btn btn-outline-primary @(ViewBag.Filter == tag.Name ? "active" : "")">@tag.Name</a>
+    }
+</div>
 
 @foreach(var post in Model)
-{
+{  
+
     <div class="post">
         <h2><a asp-action="Details" asp-route-id="@post.Id">@post.Title</a></h2>
         <p>@Html.Raw(post.Body)</p>

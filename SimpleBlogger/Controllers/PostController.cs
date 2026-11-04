@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SimpleBlogger.Business.Interfaces;
 using SimpleBlogger.Models;
 using SimpleBlogger.Models.ViewModels;
@@ -33,19 +34,34 @@ namespace SimpleBlogger.Controllers
 
         }
         // GET: PostController
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? filter)
         {
-            var posts = await _postService.GetPostsWithTagAndCommentsAsync();
+            
+            ViewBag.tags = await _tagService.GetAllTagsAsync();
+            ViewBag.filter = filter;
+            var posts = new List<Post>();
 
-            var vmList = posts.Select(p => new PostWithTagsViewModel
+            if (!string.IsNullOrEmpty(filter))
+            {
+                ViewBag.Filter = filter;
+                posts = (await _postService.GetPostsWithTagAndCommentsAsync(filter)).ToList();
+            }
+            else
+            {
+                posts = (await _postService.GetPostsWithTagAndCommentsAsync()).ToList();
+            }
+
+            var vmList = posts.Select(p => new PostWithTagAndFilterViewModel
             {
                 Id = p.Id,
                 Title = p.Title,
                 Body = p.Body,
                 CreatedAt = p.CreatedAt,
                 UserId = p.UserId,
-                AssignedTag = p.PostTags.FirstOrDefault()?.Tag
+                AssignedTag = p.PostTag?.Tag
             }).ToList();
+
+            
 
             return View(vmList);
         }
@@ -59,7 +75,7 @@ namespace SimpleBlogger.Controllers
                 return NotFound();
 
 
-            var viewModel = new PostDetailsViewModel
+            var viewModel = new PostWithTagAndCommentsViewModel
             {
                 Id = id,
                 Title = post.Title,
@@ -67,7 +83,7 @@ namespace SimpleBlogger.Controllers
                 CreatedAt = post.CreatedAt,
                 User = post.User,
                 Comments = post.Comments,
-                AssignedTag = post.PostTags.FirstOrDefault()?.Tag
+                AssignedTag = post.PostTag?.Tag
 
             };
 
@@ -79,7 +95,7 @@ namespace SimpleBlogger.Controllers
         //}
 
         // GET: PostController/Create
-        public IActionResult Create(PostCreateViewModel vm)
+        public IActionResult Create(PostWithTagSelectListViewModel vm)
         {
             vm.TagSelectList = new SelectList(_tagService.GetAllTagsAsync().Result, "Id", "Name");
             return View(vm);
@@ -87,7 +103,7 @@ namespace SimpleBlogger.Controllers
 
         [HttpPost]
         [ActionName("Create")]
-        public async Task<IActionResult> CreatePOST(PostCreateViewModel vm) // FIXME: Not saving psotTag properly
+        public async Task<IActionResult> CreatePOST(PostWithTagSelectListViewModel vm) // FIXME: Not saving psotTag properly
         {
             var post = new Post
             {

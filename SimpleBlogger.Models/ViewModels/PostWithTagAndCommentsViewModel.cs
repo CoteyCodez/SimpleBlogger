@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SimpleBlogger.Models.ViewModels
 {
-    public class PostDetailsViewModel
+    public class PostWithTagAndCommentsViewModel
     {
         #region Post
         public int Id { get; set; }

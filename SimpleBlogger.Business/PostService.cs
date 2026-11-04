@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using SimpleBlogger.Business.Interfaces;
 using SimpleBlogger.Data;
 using SimpleBlogger.Models;
-using SimpleBlogger.Business.Interfaces;
 
 namespace SimpleBlogger.Business
 {
@@ -30,7 +31,7 @@ namespace SimpleBlogger.Business
 
         public async Task<Post> GetPostWithTagAndCommentsAsync(int postId)
         {
-            return await _context.Posts.Include(p => p.PostTags)
+            return await _context.Posts.Include(p => p.PostTag)
                 .ThenInclude(pt => pt.Tag)
                 .Include(p => p.Comments)
                 .FirstOrDefaultAsync(p => p.Id == postId);
@@ -40,14 +41,28 @@ namespace SimpleBlogger.Business
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Post>> GetPostsWithTagAndCommentsAsync()
+        public async Task<List<Post>> GetPostsWithTagAndCommentsAsync(string? filter = null)
         {
-            var postsWithTags = await _context.Posts.Include(p => p.PostTags)
-                .ThenInclude(pt => pt.Tag)
-                .Include(p => p.Comments)
-                .ToListAsync();
+            var postsWithTags = new List<Post>();
 
-            return postsWithTags;
+
+            var query = await _context.Posts.Include(p => p.PostTag).ThenInclude(pt => pt.Tag)
+                        .Include(p => p.Comments)
+                        .ToListAsync();
+           
+            if (!string.IsNullOrEmpty(filter))
+                query  = query.Where(t => t.PostTag?.Tag.Name == filter).ToList();
+
+            return query;
+        }
+
+        public async Task<IEnumerable<Post>> FilterPosts(IEnumerable<Post> posts, string filter)
+        {
+            var tagList = await _context.Tags.ToListAsync(); 
+            //tagList.Append(tagList => new Tag (name))
+            IEnumerable<Post> filteredList = (IEnumerable<Post>)posts.Select(t => t.PostTag.Tag.Name == filter);
+
+            return filteredList;
         }
     }
 }

@@ -8,8 +8,6 @@ namespace SimpleBlogger.Business.Interfaces
         Task<Post> CreatePostAsync(Post post);
         Task<Post> UpdatePostAsync(Post post);
         Task<Post> DeletePostAsync(int postId);
-        Task<IEnumerable<Post>> GetPostsWithTagAndCommentsAsync();
-
-
+        Task<List<Post>> GetPostsWithTagAndCommentsAsync(string? filter = null);
     }
 }

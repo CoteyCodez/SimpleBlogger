@@ -21,7 +21,7 @@ namespace SimpleBlogger.Models
 
         // Navigation properties
         [ValidateNever]
-        public ICollection<PostTag> PostTags { get; set; } = new List<PostTag>();
+        public PostTag PostTag { get; set; }
         [ValidateNever]
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }

@@ -8,18 +8,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SimpleBlogger.Models.ViewModels
 {
-    public class PostCreateViewModel
+    public class PostWithTagAndFilterViewModel
     {
         public int Id { get; set; }
         public string Title { get; set; }
 
         public string Body { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public string? UserId { get; set; }
-        [ValidateNever]
-        public SelectList? TagSelectList { get; set; }
-        public int? SelectedTagId { get; set; }
-
+        public string? UserId { get; set; }        
+        public Tag? AssignedTag { get; set; }
 
     }
 }
