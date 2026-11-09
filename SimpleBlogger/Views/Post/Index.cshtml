@@ -2,6 +2,7 @@
 @model List<PostWithTagAndFilterViewModel>
 
 <div class="mb-3">
+    <!--The line below is really cool!-->
     <a asp-action="Index" class="btn btn-outline-secondary @(ViewBag.Filter == null ? "active" : "")">All</a>
     @foreach (var tag in ViewBag.Tags)
     {

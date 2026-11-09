@@ -2,6 +2,7 @@
 {
     public class SD
     {
+        public const string RoleAuthor = "Author";
         #region Tags
         public const string PersonalPortfolioTag = "Personal & Portfolio";
         public const string BusinessCorporateTag = "Business & Corporate";
@@ -14,7 +15,6 @@
         public const string TechnologyEntertainmentTag = "Technology & Entertainment";
         public const string NicheAffiliateNewsTag = "Niche, Affiliate & News";
         #endregion
-
 
     }
 }

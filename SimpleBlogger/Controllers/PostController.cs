@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -61,7 +62,7 @@ namespace SimpleBlogger.Controllers
                 AssignedTag = p.PostTag?.Tag
             }).ToList();
 
-            
+            vmList.Reverse();
 
             return View(vmList);
         }
@@ -95,12 +96,14 @@ namespace SimpleBlogger.Controllers
         //}
 
         // GET: PostController/Create
+        [Authorize]
         public IActionResult Create(PostWithTagSelectListViewModel vm)
         {
             vm.TagSelectList = new SelectList(_tagService.GetAllTagsAsync().Result, "Id", "Name");
             return View(vm);
         }
 
+        [Authorize]
         [HttpPost]
         [ActionName("Create")]
         public async Task<IActionResult> CreatePOST(PostWithTagSelectListViewModel vm) // FIXME: Not saving psotTag properly
