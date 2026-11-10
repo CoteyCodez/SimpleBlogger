@@ -15,6 +15,7 @@ namespace SimpleBlogger.Models.ViewModels
 
         public string Body { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [ValidateNever]
         public string UserId { get; set; }
         [ValidateNever]
         public SelectList? TagSelectList { get; set; }
