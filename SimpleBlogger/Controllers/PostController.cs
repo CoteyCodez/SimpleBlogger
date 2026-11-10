@@ -70,19 +70,25 @@ namespace SimpleBlogger.Controllers
         // GET: PostController/Details/5
         public async Task<IActionResult> Details(int id)
         {
+           
             var post = await _postService.GetPostWithTagAndCommentsAsync(id);
 
             if (post == null) 
                 return NotFound();
 
+            var user = await _userManager.GetUserAsync(User);
+            if (user.Id != post.UserId)
+                return Forbid(); 
+
 
             var viewModel = new PostWithTagAndCommentsViewModel
             {
                 Id = id,
+                
                 Title = post.Title,
                 PostBody = post.Body,
                 CreatedAt = post.CreatedAt,
-                User = post.User,
+                UserId = post.UserId,
                 Comments = post.Comments,
                 AssignedTag = post.PostTag?.Tag
 
@@ -97,7 +103,7 @@ namespace SimpleBlogger.Controllers
 
         // GET: PostController/Create
         [Authorize]
-        public IActionResult Create(PostWithTagSelectListViewModel vm)
+        public async Task<IActionResult> Create(PostWithTagSelectListViewModel vm)
         {
             vm.TagSelectList = new SelectList(_tagService.GetAllTagsAsync().Result, "Id", "Name");
             return View(vm);
@@ -142,7 +148,62 @@ namespace SimpleBlogger.Controllers
             //Fixme: Add CreatePostTagAsync here to save the PostTag relationship if a tag is selected
             return RedirectToAction("Index");
         }
+        public async Task<IActionResult> Edit(int Id)
+        {
+            var post = await _postService.GetPostWithTagAndCommentsAsync(Id);
 
+            PostWithTagSelectListViewModel vm = new PostWithTagSelectListViewModel
+            {
+                Id = post.Id, 
+                Title = post.Title,
+                Body = post.Body,
+                CreatedAt = post.CreatedAt,
+                UserId = post.UserId,
+                SelectedTagId = post.PostTag?.TagId
+            };
+            vm.TagSelectList = new SelectList(_tagService.GetAllTagsAsync().Result, "Id", "Name");
+            return View(vm);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ActionName("Edit")]
+        public async Task<IActionResult> EditPOST(PostWithTagSelectListViewModel vm) // FIXME: Not saving psotTag properly
+        {
+            var post = new Post
+            {
+                //Id = vm.Id, 
+                Title = vm.Title,
+                Body = vm.Body,
+                CreatedAt = vm.CreatedAt,
+                UserId = _userManager.GetUserId(User)
+            };
+
+            if (!ModelState.IsValid)
+            {
+                throw new Exception("Didn't work");
+            }
+
+            var postTag = new PostTag();
+
+            if (vm.SelectedTagId != null)
+            {
+                int tagId = vm.SelectedTagId ?? 0;
+
+                postTag.Post = post;
+                postTag.Tag = await _tagService.GetSingleTagAsync(tagId);
+
+                await _postService.CreatePostAsync(post);
+                await _postTagService.CreatePostTagAsync(postTag);
+                return RedirectToAction("Index");
+
+            }
+            await _postService.CreatePostAsync(post);
+
+
+            //Fixme: Add CreatePostTagAsync here to save the PostTag relationship if a tag is selected
+            return RedirectToAction("Index");
+        }
         // POST: PostController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -169,24 +230,24 @@ namespace SimpleBlogger.Controllers
         //}
 
         // GET: PostController/Edit/5
-        public IActionResult Edit(int id)
-        {
-            return View();
-        }
+        //public IActionResult Edit(int id)
+        //{
+        //    return View();
+        //}
 
-        // POST: PostController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        //// POST: PostController/Edit/5
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Edit(int id, IFormCollection collection)
+        //{
+        //    try
+        //    {
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+        //}
     }
 }

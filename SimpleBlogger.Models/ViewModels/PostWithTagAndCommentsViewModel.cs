@@ -14,7 +14,7 @@ namespace SimpleBlogger.Models.ViewModels
         public string PostBody { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         //public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public string UserId { get; set; }
         #endregion
 
         public Tag AssignedTag { get; set; }
